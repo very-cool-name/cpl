@@ -8,7 +8,7 @@
 
 void test_sum() {
   std::vector<int> data = {1, 2, 3, 4, 5, 6};
-  SegmentTree<int, std::plus<int>> tree(std::begin(data), std::end(data));
+  cpl::SegmentTree<int, std::plus<int>> tree(std::begin(data), std::end(data));
   for (int i = 0; i < data.size(); ++i)
     assert(tree.Get(i, i) == data[i]);
   assert(tree.Get(0, 5) == 21);
@@ -29,7 +29,7 @@ struct greater {
 
 void test_max() {
   std::vector<int> data = {1, 2, 3, 4, 5, 6};
-  SegmentTree<int, greater<int>> tree(std::begin(data), std::end(data));
+  cpl::SegmentTree<int, greater<int>> tree(std::begin(data), std::end(data));
   for (int i = 0; i < data.size(); ++i)
     assert(tree.Get(i, i) == data[i]);
   assert(tree.Get(0, 5) == 6);

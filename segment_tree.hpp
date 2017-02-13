@@ -1,28 +1,31 @@
+#ifndef CPL_SEGMENT_TREE_HPP_INCLUDED
+#define CPL_SEGMENT_TREE_HPP_INCLUDED
+
 // Segment tree implementation based on http://e-maxx.ru/algo/segment_tree
 
 #include <vector>
 #include <ostream>
+#include <algorithm>
 
-#include <iostream>
-
+namespace cpl {
 template<class Type, class Operation>
 class SegmentTree {
- public:
+  public:
   //Constructs segment tree from random-access Iterator range
   template<class Iterator>
   SegmentTree(Iterator begin, Iterator end);
- 
+
   void Set(int idx, Type new_value);
   Type Get(int l, int r) const;
   void Show(std::ostream& out) const;
-  
- private:
+
+  private:
   template<class Iterator>
   void BuildTree(int v, Iterator begin, Iterator end);
-  
+
   Type Get(int v, int tl, int tr, int l, int r) const;
   void Set(int v, int tl, int tr, int idx, Type new_val);
-  
+
   std::vector<Type> data_;
   int size_;
 };
@@ -49,7 +52,7 @@ Type SegmentTree<Type, Operation>::Get(int l, int r) const {
 
 template<class Type, class Operation>
 void SegmentTree<Type, Operation>::Show(std::ostream& out) const {
-  for(int i = 0; i < data_.size(); ++i) {
+  for (int i = 0; i < data_.size(); ++i) {
     out << i << ' ' << data_[i] << '\n';
   }
 }
@@ -79,22 +82,25 @@ Type SegmentTree<Type, Operation>::Get(int v, int tl, int tr, int l, int r) cons
   if (tl == tr || r < l)
     return 0;
   int mid = (tl + tr) >> 1;
-  return Operation()(Get((v << 1)    , tl,      mid, l, std::min(r, mid)),
+  return Operation()(Get((v << 1), tl, mid, l, std::min(r, mid)),
                      Get((v << 1) + 1, mid + 1, tr, std::max(l, mid + 1), r));
 }
 
 template<class Type, class Operation>
 void SegmentTree<Type, Operation>::Set(int v, int tl, int tr, int idx, Type new_val) {
-	if (tl == tr) { // leaf node
-		data_[v] = new_val;
-	} else { // go to left or right and set there, then update current node with Operation
-		int mid = (tl + tr) >> 1;
+  if (tl == tr) { // leaf node
+    data_[v] = new_val;
+  } else { // go to left or right and set there, then update current node with Operation
+    int mid = (tl + tr) >> 1;
     int left = v << 1;
     int right = (v << 1) + 1;
-		if (idx <= mid)
-			Set (left, tl, mid, idx, new_val);
-		else
-			Set (right, mid + 1, tr, idx, new_val);
-		data_[v] = Operation()(data_[left], data_[right]);
-	}
+    if (idx <= mid)
+      Set(left, tl, mid, idx, new_val);
+    else
+      Set(right, mid + 1, tr, idx, new_val);
+    data_[v] = Operation()(data_[left], data_[right]);
+  }
 }
+} // namespace cpl
+
+#endif // CPL_SEGMENT_TREE_HPP_INCLUDED
